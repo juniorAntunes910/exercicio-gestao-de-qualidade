@@ -17,7 +17,7 @@ public class EquipamentoServiceIntegrationTest {
     private static final String SQL_CREATE_TABLE =
             """
             CREATE TABLE IF NOT EXISTS Equipamento (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id  SERIAL PRIMARY KEY,
                 nome VARCHAR(255) NOT NULL,
                 numeroDeSerie VARCHAR(100) NOT NULL UNIQUE,
                 areaSetor VARCHAR(100) NOT NULL,

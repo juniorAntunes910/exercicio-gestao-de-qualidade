@@ -22,9 +22,9 @@ public class FalhaServiceIntegrationTest {
     private static final String SQL_CREATE_TABLE_FALHA =
             """
             CREATE TABLE IF NOT EXISTS Falha (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id  SERIAL PRIMARY KEY,
                 equipamentoId BIGINT NOT NULL,
-                dataHoraOcorrencia DATETIME NOT NULL,
+                dataHoraOcorrencia TIMESTAMP NOT NULL,
                 descricao TEXT NOT NULL,
                 criticidade VARCHAR(50) NOT NULL,
                 status VARCHAR(50) NOT NULL,
@@ -42,7 +42,7 @@ public class FalhaServiceIntegrationTest {
     private static final String SQL_CREATE_TABLE_EQUIP =
             """
             CREATE TABLE IF NOT EXISTS Equipamento (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id SERIAL PRIMARY KEY,
                 nome VARCHAR(255) NOT NULL,
                 numeroDeSerie VARCHAR(100) NOT NULL UNIQUE,
                 areaSetor VARCHAR(100) NOT NULL,

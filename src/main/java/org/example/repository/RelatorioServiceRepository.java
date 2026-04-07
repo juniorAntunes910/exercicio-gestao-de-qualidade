@@ -1,4 +1,4 @@
-package org.example.service.relatorioservice;
+package org.example.repository;
 
 import org.example.dto.EquipamentoContagemFalhasDTO;
 import org.example.dto.FalhaDetalhadaDTO;
@@ -10,13 +10,15 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface RelatorioService {
-    List<RelatorioParadaDTO> gerarRelatorioTempoParada() throws SQLException;
+public interface RelatorioServiceRepository {
+
+    List<RelatorioParadaDTO> relatoriosParada() throws SQLException;
+
+    Optional<FalhaDetalhadaDTO> relatorioFalhaDetalhada(long falhaId) throws SQLException;
+
+    List<EquipamentoContagemFalhasDTO> gerarRelatorioManutencaoPreventiva(int contagemMinimaFalhas) throws SQLException;
 
     List<Equipamento> buscarEquipamentosSemFalhasPorPeriodo(LocalDate dataInicio, LocalDate datafim)throws SQLException;
 
-    Optional<FalhaDetalhadaDTO> buscarDetalhesCompletosFalha(long falhaId) throws SQLException;
-
-    List<EquipamentoContagemFalhasDTO> gerarRelatorioManutencaoPreventiva(int contagemMinimaFalhas) throws SQLException;
 
 }

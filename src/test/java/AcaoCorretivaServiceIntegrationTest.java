@@ -22,7 +22,7 @@ public class AcaoCorretivaServiceIntegrationTest {
     private static final String SQL_CREATE_EQUIP =
             """
             CREATE TABLE IF NOT EXISTS Equipamento (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id SERIAL  PRIMARY KEY,
                 nome VARCHAR(255) NOT NULL,
                 numeroDeSerie VARCHAR(100) NOT NULL UNIQUE,
                 areaSetor VARCHAR(100) NOT NULL,
@@ -36,9 +36,9 @@ public class AcaoCorretivaServiceIntegrationTest {
     private static final String SQL_CREATE_FALHA =
             """
             CREATE TABLE IF NOT EXISTS Falha (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id  SERIAL PRIMARY KEY,
                 equipamentoId BIGINT NOT NULL,
-                dataHoraOcorrencia DATETIME NOT NULL,
+                dataHoraOcorrencia TIMESTAMP NOT NULL,
                 descricao TEXT NOT NULL,
                 criticidade VARCHAR(50) NOT NULL,
                 status VARCHAR(50) NOT NULL,
@@ -60,10 +60,10 @@ public class AcaoCorretivaServiceIntegrationTest {
     private static final String SQL_CREATE_ACAO =
             """
             CREATE TABLE IF NOT EXISTS AcaoCorretiva (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                id  SERIAL PRIMARY KEY,
                 falhaId BIGINT NOT NULL,
-                dataHoraInicio DATETIME NOT NULL,
-                dataHoraFim DATETIME NOT NULL,
+                dataHoraInicio TIMESTAMP NOT NULL,
+                dataHoraFim TIMESTAMP NOT NULL,
                 responsavel VARCHAR(255) NOT NULL,
                 descricaoAcao TEXT NOT NULL,
 
@@ -127,20 +127,23 @@ public class AcaoCorretivaServiceIntegrationTest {
         try (Connection conn = Conexao.conectar();
              Statement stmt = conn.createStatement()) {
 
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 0");
+            stmt.execute("SET session_replication_role = 'replica';");
 
-            stmt.execute(SQL_TRUNCATE1); // AcaoCorretiva
-            stmt.execute(SQL_TRUNCATE2); // Falha
-            stmt.execute(SQL_TRUNCATE3); // Equipamento
+            // DELETE funciona com session_replication_role
+            stmt.execute("DELETE FROM AcaoCorretiva;");
+            stmt.execute("DELETE FROM Falha;");
+            stmt.execute("DELETE FROM Equipamento;");
 
-            // Reabilita FK
-            stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
+            // Resetar os IDs manualmente (opcional, mas recomendado para testes)
+            stmt.execute("ALTER SEQUENCE acaocorretiva_id_seq RESTART WITH 1;");
+            stmt.execute("ALTER SEQUENCE falha_id_seq RESTART WITH 1;");
+            stmt.execute("ALTER SEQUENCE equipamento_id_seq RESTART WITH 1;");
+
+            stmt.execute("SET session_replication_role = 'origin';");
         }
 
         acaoService = new AcaoCorretivaServiceImpl();
     }
-
-
     // -------------------------------------------------
     //  TESTE 1 - Falha inexistente → Exception
     // -------------------------------------------------
